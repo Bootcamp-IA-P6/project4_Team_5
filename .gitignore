@@ -5,6 +5,13 @@ edda.ipynb
 __pycache__/
 raw/
 
-models/baseline_20260318_0923_*
-models/baseline_f2642b8cc93a_*
-logs/baseline_f2642b8cc93a/   
+models/baseline_*
+logs/baseline_f2642b8cc93a/
+models/   
+
+main2.py
+registro_fase_4_finetuning.json
+pruebas.ipynb
+predictor.py
+
+
