@@ -1,0 +1,13 @@
+               precision    recall  f1-score   support
+
+       vidrio       0.97      0.95      0.96       367
+     plastico       0.93      0.91      0.92       268
+        metal       0.91      0.92      0.92       234
+        papel       0.92      0.92      0.92       232
+     organico       0.99      0.99      0.99       210
+       carton       0.88      0.94      0.91       203
+no_reciclable       0.97      0.92      0.95       125
+
+     accuracy                           0.94      1639
+    macro avg       0.94      0.94      0.94      1639
+ weighted avg       0.94      0.94      0.94      1639

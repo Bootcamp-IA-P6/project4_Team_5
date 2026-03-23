@@ -1,0 +1,24 @@
+{
+  "run_id": "baseline_e96de0c723f2",
+  "fingerprint": "e96de0c723f2",
+  "fase": "frozen",
+  "epochs_ejecutados": 20,
+  "epochs_max": 20,
+  "hyperparams": {
+    "batch_size": 32,
+    "epochs_frozen": 20,
+    "lr_frozen": 0.001,
+    "dropout_1": 0.3,
+    "dropout_2": 0.2,
+    "dense_units": 256,
+    "architecture": "EfficientNetB0",
+    "seed": 42,
+    "normalizacion": "backbone_interno"
+  },
+  "best_val_accuracy": 0.9298352599143982,
+  "best_epoch": 20,
+  "train_accuracy_final": 0.9614076614379884,
+  "overfitting": 0.0315724015235902,
+  "checkpoint_path": "/mnt/c/Users/under/Documents/F5/3_Projects/Grupo5-MultiClase/project4_Team_5/models/baseline_e96de0c723f2_best.keras",
+  "fecha_completado": "2026-03-19 10:51"
+}

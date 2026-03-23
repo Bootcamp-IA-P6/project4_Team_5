@@ -1,0 +1,116 @@
+{
+  "fecha": "2026-03-17 14:56",
+  "notebook": "01_eda_waste_classifier.ipynb",
+  "splits": {
+    "train": 7644,
+    "val": 1639,
+    "test": 1639
+  },
+  "clases": [
+    "vidrio",
+    "plastico",
+    "metal",
+    "papel",
+    "organico",
+    "carton",
+    "no_reciclable"
+  ],
+  "balance": {
+    "ratio_max_min": 2.928,
+    "clase_mayor": "vidrio",
+    "clase_menor": "no_reciclable",
+    "estrategia": "class_weight_balanced + augmentation_asimetrico"
+  },
+  "class_weights": {
+    "vidrio": 0.6386,
+    "plastico": 0.8722,
+    "metal": 1.0018,
+    "papel": 1.0065,
+    "organico": 1.1177,
+    "carton": 1.1543,
+    "no_reciclable": 1.8699
+  },
+  "resoluciones": {
+    "ancho_min": 114,
+    "ancho_max": 524,
+    "alto_min": 107,
+    "alto_max": 524,
+    "mediana_ancho": 512,
+    "mediana_alto": 384
+  },
+  "resize_target": [
+    224,
+    224
+  ],
+  "normalizacion": "efficientnet_preprocess_input",
+  "normalizacion_nota": "preprocess_input escala a [-1,1]. Delta alto vs ImageNet no requiere normalizacion personalizada.",
+  "color_delta_imagenet": {
+    "vidrio": 0.2559,
+    "plastico": 0.2078,
+    "metal": 0.198,
+    "papel": 0.1879,
+    "organico": 0.1285,
+    "carton": 0.1792,
+    "no_reciclable": 0.3654
+  },
+  "augmentation_config": {
+    "vidrio": {
+      "rotation": 10,
+      "flip": true,
+      "zoom": 0.05,
+      "brightness": 0.2,
+      "contrast": 0.2
+    },
+    "plastico": {
+      "rotation": 15,
+      "flip": true,
+      "zoom": 0.1,
+      "brightness": 0.2,
+      "contrast": 0.2
+    },
+    "metal": {
+      "rotation": 20,
+      "flip": true,
+      "zoom": 0.1,
+      "brightness": 0.2,
+      "contrast": 0.2
+    },
+    "papel": {
+      "rotation": 20,
+      "flip": true,
+      "zoom": 0.1,
+      "brightness": 0.2,
+      "contrast": 0.2
+    },
+    "organico": {
+      "rotation": 30,
+      "flip": true,
+      "zoom": 0.15,
+      "brightness": 0.25,
+      "contrast": 0.25
+    },
+    "carton": {
+      "rotation": 30,
+      "flip": true,
+      "zoom": 0.15,
+      "brightness": 0.25,
+      "contrast": 0.25
+    },
+    "no_reciclable": {
+      "rotation": 45,
+      "flip": true,
+      "zoom": 0.2,
+      "brightness": 0.3,
+      "contrast": 0.3
+    }
+  },
+  "anomalias": 0,
+  "artefactos": [
+    "logs/eda_class_distribution.png",
+    "logs/eda_visual_grid.png",
+    "logs/eda_resolutions.png",
+    "logs/eda_color_stats.png",
+    "logs/class_weights.json",
+    "logs/eda_decisions.json"
+  ]
+}

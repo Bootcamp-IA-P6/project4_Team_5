@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-03-17T09:32:33.648850",
+  "random_seed": 42,
+  "total_images": 10922,
+  "num_classes": 7,
+  "classes": [
+    "metal",
+    "vidrio",
+    "papel",
+    "carton",
+    "plastico",
+    "no_reciclable",
+    "organico"
+  ],
+  "class_counts": {
+    "vidrio": 2444,
+    "plastico": 1788,
+    "metal": 1558,
+    "papel": 1550,
+    "organico": 1396,
+    "carton": 1352,
+    "no_reciclable": 834
+  },
+  "balance_ratio": 2.93,
+  "splits": {
+    "train": 7644,
+    "val": 1639,
+    "test": 1639
+  }
+}

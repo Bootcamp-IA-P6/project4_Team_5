@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Modelos de Deep Learning
 *.keras
 *.h5
@@ -12,3 +13,22 @@ env/
 # Carpetas de datos (si son muchas imágenes)
 data/
 dataset/
+=======
+!/data/.gitkeep
+.ipynb_checkpoints/
+edda.ipynb
+
+__pycache__/
+raw/
+
+models/baseline_*
+logs/baseline_f2642b8cc93a/
+models/   
+
+main2.py
+registro_fase_4_finetuning.json
+pruebas.ipynb
+predictor.py
+
+
+>>>>>>> develop
