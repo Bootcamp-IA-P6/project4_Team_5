@@ -1,3 +1,17 @@
+# Modelos de Deep Learning
+*.keras
+*.h5
+*.tflite
+*.weights.h5
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Carpetas de datos (si son muchas imágenes)
+data/
+dataset/
 !/data/.gitkeep
 .ipynb_checkpoints/
 edda.ipynb
