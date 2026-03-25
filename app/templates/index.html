@@ -15,6 +15,9 @@
     <button class="tab" data-tab="about" data-i18n="tab_about">
         <i class="fa-solid fa-circle-info"></i> About
     </button>
+    <button class="tab" data-tab="contact" data-i18n="tab_contact">
+        Contact Us
+    </button>
 </div>
 
 <!-- HOME TAB -->
@@ -134,6 +137,25 @@
     <h2 data-i18n="classify_title">Classify Your Waste</h2>
     <p class="section-desc" data-i18n="classify_desc">Upload an image or use your camera to find out which bin it belongs in.</p>
 
+    <div class="model-selector">
+        <label data-i18n="model_select">Select model:</label>
+        <div class="model-options" id="modelOptions">
+            <button class="model-btn active" data-model="resnet50">
+                <i class="fa-solid fa-brain"></i> ResNet50
+                <span class="model-badge default" data-i18n="model_default">Default</span>
+            </button>
+            <button class="model-btn" data-model="efficientnet">
+                <i class="fa-solid fa-bolt"></i> EfficientNetB0 Model 1
+            </button>
+            <button class="model-btn" data-model="efficientnet_raul">
+                <i class="fa-solid fa-bolt"></i> EfficientNetB0 Model 2
+            </button>
+            <button class="model-btn disabled" data-model="mobilenet" disabled>
+                <i class="fa-solid fa-mobile-screen"></i> MobileNetV2
+            </button>
+        </div>
+    </div>
+
     <div class="sub-tabs">
         <button class="sub-tab active" data-subtab="image" onclick="switchSubTab('image')">
             <i class="fa-solid fa-image"></i> <span data-i18n="subtab_image">Image</span>
@@ -208,12 +230,36 @@
             <h4 data-i18n="all_predictions">All Predictions</h4>
             <div id="predictionsChart"></div>
         </div>
+
+        <!-- Feedback Form -->
+        <div class="feedback-form" id="feedbackForm">
+            <div class="feedback-question">
+                <i class="fa-solid fa-circle-question"></i>
+                <span data-i18n="feedback_question">Was this prediction correct?</span>
+            </div>
+            <div class="feedback-buttons">
+                <button class="feedback-btn correct" onclick="submitFeedback(true)">
+                    <i class="fa-solid fa-check"></i> <span data-i18n="feedback_yes">Yes</span>
+                </button>
+                <button class="feedback-btn incorrect" onclick="submitFeedback(false)">
+                    <i class="fa-solid fa-xmark"></i> <span data-i18n="feedback_no">No</span>
+                </button>
+            </div>
+            <div class="feedback-correction" id="feedbackCorrection" style="display:none;">
+                <p data-i18n="feedback_correct_class">What is the correct class?</p>
+                <div class="correction-options" id="correctionOptions"></div>
+            </div>
+            <div class="feedback-thanks" id="feedbackThanks" style="display:none;">
+                <i class="fa-solid fa-heart"></i>
+                <span data-i18n="feedback_thanks">Thanks for your feedback!</span>
+            </div>
+        </div>
     </div>
 </section>
 
 <!-- METRICS TAB -->
 <section id="metrics" class="tab-content">
-    <h2 data-i18n="metrics_title">Model Performance</h2>
+    <h2 style="text-align:center" data-i18n="metrics_title">Model Performance</h2>
     <p class="section-desc" data-i18n="metrics_desc">Detailed metrics from the trained ResNet50 model evaluated on the test set (1,385 images).</p>
 
     <div class="kpi-grid">
@@ -371,6 +417,91 @@
                 All images were resized to 224x224 and preprocessed with ResNet50's standard preprocessing (ImageNet mean subtraction, BGR conversion). Data augmentation was applied only to the training set: RandomFlip (horizontal), RandomRotation (0.2), RandomZoom (0.2), RandomBrightness (0.2), and RandomContrast (0.2). The tf.data pipeline with prefetching was used for efficient GPU utilization. Dropout layers (p=0.3) in the classification head provided regularization during training.
             </div>
             <span class="about-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CONTACT US ========== -->
+<section id="contact" class="tab-content">
+    <h2 style="text-align:center; margin-bottom:0.2rem" data-i18n="contact_title">Meet the Team</h2>
+    <p class="section-desc" style="text-align:center; margin-bottom:0" data-i18n="contact_desc">The people behind OopsBin.</p>
+
+    <div class="team-group-img" id="teamGroupImg">
+        <img src="{{ url_for('static', filename='img/all-characters.png') }}" alt="The OopsBin Team" class="all-characters">
+    </div>
+
+    <div class="contact-layout" id="contactCarousel" style="display:none;">
+        <div class="carousel-side">
+            <div class="carousel-container">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide" data-member="naiza">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Naizabeth Bermudez</h3>
+                                <p class="member-role">MobileNetV2 Model</p>
+                                <a href="https://www.linkedin.com/in/naizabethbermudez/" target="_blank" rel="noopener" class="contact-btn contact-blue" data-i18n="contact_her">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Her
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/blue-female-character.png') }}" alt="Naizabeth">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-member="jonathan">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Jonathan Brasales</h3>
+                                <p class="member-role">EfficientNetB0 Model 1</p>
+                                <a href="https://www.linkedin.com/in/jbrasales/" target="_blank" rel="noopener" class="contact-btn contact-yellow" data-i18n="contact_him">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Him
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/yellow-character.png') }}" alt="Jonathan">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-member="raul">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Raul Machaca Luna</h3>
+                                <p class="member-role">EfficientNetB0 Model 2</p>
+                                <a href="https://www.linkedin.com/in/raulmachaca/" target="_blank" rel="noopener" class="contact-btn contact-green" data-i18n="contact_him">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Him
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/green-character.png') }}" alt="Raul">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-member="roberto">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Roberto Molero</h3>
+                                <p class="member-role">ResNet50 Model</p>
+                                <a href="https://www.linkedin.com/in/ruperthlosada/" target="_blank" rel="noopener" class="contact-btn contact-brown" data-i18n="contact_him">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Him
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/brown-character.png') }}" alt="Roberto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-dots" id="carouselDots">
+                <span class="dot active" onclick="goToSlide(0)"></span>
+                <span class="dot" onclick="goToSlide(1)"></span>
+                <span class="dot" onclick="goToSlide(2)"></span>
+                <span class="dot" onclick="goToSlide(3)"></span>
+            </div>
         </div>
     </div>
 </section>
