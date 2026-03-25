@@ -19,3 +19,34 @@ __pycache__/
 
 
 .DS_Store
+# Deep learning models
+*.keras
+*.h5
+*.tflite
+*.weights.h5
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Data folders (if many images)
+data/
+dataset/
+!/data/.gitkeep
+.ipynb_checkpoints/
+edda.ipynb
+
+__pycache__/
+raw/
+
+models/baseline_*
+logs/baseline_f2642b8cc93a/
+models/   
+
+main2.py
+registro_fase_4_finetuning.json
+pruebas.ipynb
+predictor.py
+
+
