@@ -1,0 +1,14 @@
+.git
+.venv
+.env
+__pycache__
+*.pyc
+.DS_Store
+notebooks/
+data/
+tests/
+.github/
+.claude/
+*.ipynb
+uv.lock
+pyproject.toml

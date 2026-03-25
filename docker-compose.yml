@@ -1,0 +1,12 @@
+services:
+  oopsbin:
+    build: .
+    ports:
+      - "8080:5000"
+    env_file:
+      - .env
+    environment:
+      - TF_CPP_MIN_LOG_LEVEL=3
+    volumes:
+      - ./models:/app/models
+    restart: unless-stopped
