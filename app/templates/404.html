@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}OopsBin - {{ error_code or 404 }}{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <img src="{{ url_for('static', filename='img/404notfound.png') }}" alt="404 Not Found" style="max-width:240px;width:100%;height:auto;margin-bottom:0;">
+    <h2 data-i18n="err_404">{{ error_msg or "Page Not Found" }}</h2>
+    <p data-i18n="err_404_desc">Looks like this page ended up in the wrong bin.</p>
+    <a href="/" class="cta-btn" data-i18n="err_back">
+        <i class="fa-solid fa-house"></i> Back to Home
+    </a>
+</div>
+{% endblock %}

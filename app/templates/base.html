@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OopsBin{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/pet1.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="OopsBin" class="logo-img">
+        </a>
+        <div class="nav-controls">
+            <div class="lang-selector">
+                <button class="lang-btn" id="langBtn" title="Language">
+                    <i class="fa-solid fa-globe"></i> <span id="langLabel">EN</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option" data-lang="en">English</button>
+                    <button class="lang-option" data-lang="es">Español</button>
+                    <button class="lang-option" data-lang="ko">한국어</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="footer-content">
+            <a href="/" class="footer-mascot-link" title="Back to top">
+                <img src="" alt="OopsBin" class="footer-mascot" id="footerPet">
+            </a>
+            <p data-i18n="footer">OopsBin &mdash; Waste Classification System</p>
+        </div>
+    </footer>
+    <script>
+        // ========== PET IMAGES BY THEME ==========
+        function updatePetImages() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const petSrc = theme === 'dark'
+                ? '{{ url_for("static", filename="img/pet2.png") }}'
+                : '{{ url_for("static", filename="img/pet1.png") }}';
+            document.querySelectorAll('.pet-img').forEach(img => img.src = petSrc);
+            const footerPet = document.getElementById('footerPet');
+            if (footerPet) footerPet.src = petSrc;
+        }
+
+        // ========== THEME TOGGLE ==========
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) html.setAttribute('data-theme', savedTheme);
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            toggle.innerHTML = next === 'dark'
+                ? '<i class="fa-solid fa-sun"></i>'
+                : '<i class="fa-solid fa-moon"></i>';
+            updatePetImages();
+        });
+        if (html.getAttribute('data-theme') === 'dark') {
+            toggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        }
+        updatePetImages();
+
+        // ========== LANGUAGE SELECTOR ==========
+        const langBtn = document.getElementById('langBtn');
+        const langDropdown = document.getElementById('langDropdown');
+        const langLabel = document.getElementById('langLabel');
+
+        const savedLang = localStorage.getItem('lang') || 'en';
+        html.setAttribute('data-lang', savedLang);
+        const langLabels = { en: 'EN', es: 'ES', ko: 'KO' };
+        langLabel.textContent = langLabels[savedLang];
+
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('open');
+        });
+
+        document.addEventListener('click', () => langDropdown.classList.remove('open'));
+
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lang = btn.dataset.lang;
+                html.setAttribute('data-lang', lang);
+                localStorage.setItem('lang', lang);
+                langLabel.textContent = langLabels[lang];
+                langDropdown.classList.remove('open');
+                applyTranslations(lang);
+            });
+        });
+
+        // ========== TRANSLATIONS ==========
+        const translations = {
+            en: {
+                // Tabs
+                "tab_home": "Home",
+                "tab_classify": "Classify",
+                "tab_metrics": "Metrics",
+                "tab_about": "About",
+                // Hero
+                "hero_welcome": 'Welcome to <span class="highlight">OopsBin</span>',
+                "hero_subtitle": "Not sure which bin? Let AI sort it out.",
+                "hero_desc": "OopsBin is a waste classification system powered by deep learning. Upload a photo of your waste and our model will tell you exactly which bin it belongs in. Trained on over 16,000 images across 7 categories with 93.3% accuracy.",
+                "hero_cta": '<i class="fa-solid fa-arrow-right"></i> Try it now',
+                // Categories
+                "cat_cardboard": "Cardboard", "cat_glass": "Glass", "cat_metal": "Metal",
+                "cat_organic": "Organic", "cat_paper": "Paper", "cat_plastic": "Plastic", "cat_trash": "Trash",
+                "card_hint": "Click for details",
+                // Bins
+                "bin_blue": "Blue Bin", "bin_green": "Green Bin", "bin_yellow": "Yellow Bin",
+                "bin_brown": "Brown Bin", "bin_gray": "Gray Bin",
+                // Classify
+                "classify_title": "Classify Your Waste",
+                "classify_desc": "Upload an image or use your camera to find out which bin it belongs in.",
+                "subtab_image": "Image",
+                "subtab_camera": "Camera",
+                "camera_start": "Start Camera",
+                "camera_capture": "Capture",
+                "camera_stop": "Stop",
+                "camera_retake": '<i class="fa-solid fa-rotate-left"></i> Retake',
+                "upload_drag": "Drag & drop your image here",
+                "upload_or": "or",
+                "upload_browse": '<i class="fa-solid fa-folder-open"></i> Browse files',
+                "upload_hint": "PNG, JPG, JPEG, WEBP (max 10MB)",
+                "clear": '<i class="fa-solid fa-xmark"></i> Clear',
+                "analyzing": "Analyzing image...",
+                "all_predictions": "All Predictions",
+                // Metrics
+                "metrics_title": "Model Performance",
+                "metrics_desc": "Detailed metrics from the trained ResNet50 model evaluated on the test set (1,385 images).",
+                "kpi_accuracy": "Test Accuracy", "kpi_overfit": "Overfitting",
+                "kpi_f1": "Weighted F1", "kpi_epochs": "Total Epochs",
+                "cm_title": '<i class="fa-solid fa-table-cells"></i> Confusion Matrix',
+                "cm_desc": "The confusion matrix shows how the model classified each test image. Diagonal cells (dark green) are correct predictions. Off-diagonal cells are errors. The stronger the color, the higher the count.",
+                "cm_correct": "Correct predictions", "cm_errors": "Notable misclassifications (5+)",
+                "f1_title": '<i class="fa-solid fa-chart-column"></i> F1-Score by Class',
+                "f1_desc": "The F1-Score balances precision (how many predicted positives are correct) and recall (how many actual positives are found). A score of 1.0 is perfect. All classes are above 0.88.",
+                "history_title": '<i class="fa-solid fa-chart-line"></i> Training History',
+                "history_desc": "The model was trained in 3 phases: Phase 1 (epochs 1-20) trained only the classification head, Phase 2 (epochs 21-35) fine-tuned the last 30 layers, and Phase 3 (epochs 36-39) continued fine-tuning until convergence. The gap between train and validation shows overfitting is well controlled.",
+                "error_title": '<i class="fa-solid fa-magnifying-glass-chart"></i> Error Analysis',
+                "error_desc": "Understanding where the model struggles helps identify areas for improvement.",
+                "report_title": '<i class="fa-solid fa-table"></i> Detailed Classification Report',
+                "report_desc": "<strong>Precision</strong> = of all items predicted as X, how many were actually X. <strong>Recall</strong> = of all actual X items, how many did the model find. <strong>F1</strong> = harmonic mean of precision and recall.",
+                "th_class": "Class", "th_precision": "Precision", "th_recall": "Recall",
+                "th_f1": "F1-Score", "th_support": "Support",
+                // Error items
+                "err1_title": "Plastic &rarr; Metal (14 cases)",
+                "err1_desc": "Shiny plastic surfaces reflect light similarly to metal, causing confusion. Crushed cans and plastic bottles share similar shapes.",
+                "err2_title": "Trash &rarr; Metal (10 cases)",
+                "err2_desc": "Mixed waste often contains metallic elements. The \"trash\" category is inherently diverse, making classification harder.",
+                "err3_title": "Glass &rarr; Metal (8 cases)",
+                "err3_desc": "Dark glass containers and metallic cans have similar visual features, especially when lighting conditions are poor.",
+                "err4_title": "Plastic &rarr; Cardboard (8 cases)",
+                "err4_desc": "Brown or opaque plastic packaging can resemble cardboard textures in certain conditions.",
+                // About
+                "about_title": "About OopsBin",
+                "about_model_h": "Model", "about_model_p": "ResNet50 with transfer learning from ImageNet, fine-tuned in 3 progressive phases for waste classification.",
+                "about_data_h": "Dataset", "about_data_p": "Trained on 16,756 images from 3 public datasets, unified into 7 waste categories.",
+                "about_acc_h": "Accuracy", "about_acc_p": "93.3% test accuracy with only 2.6% overfitting. Precision, recall, and F1 above 0.88 for all classes.",
+                "about_arch_h": "Architecture", "about_arch_p": "Frozen ResNet50 backbone + custom classification head with dropout regularization and data augmentation.",
+                "about_model_detail": "ResNet50 is a convolutional neural network with 50 layers, pre-trained on ImageNet (1.2 million images, 1000 classes). We froze the backbone and added a custom classification head: GlobalAveragePooling2D, Dropout (0.3), Dense (256, ReLU), Dropout (0.3), and Dense (7, Softmax). Training was done in 3 phases: Phase 1 trained only the head for 20 epochs (lr=1e-3), Phase 2 fine-tuned the last 30 layers for 15 epochs (lr=1e-5), and Phase 3 continued until EarlyStopping at epoch 4 (lr=5e-6). Total trainable parameters in Phase 1: 526,343.",
+                "about_data_detail": "Three datasets were combined: Garbage Classification (6 classes, 2,527 images), Garbage Classification 12 classes (12 classes, 15,515 images), and RealWaste (9 classes, 4,752 images). Classes were unified into 7 categories. Textile was excluded. Glass subclasses (brown, green, white) were merged. The dataset was capped at 2,500 images per class and split 80/10/10 into train (11,036), validation (1,376), and test (1,385).",
+                "about_acc_detail": "The model achieved 95.9% training accuracy and 93.3% test accuracy, giving an overfitting margin of just 2.6%. Best classes: organic (F1=0.97), paper (F1=0.96), cardboard and glass (F1=0.95). Most challenging: trash (F1=0.88) and plastic (F1=0.90). EarlyStopping with patience=3 and ReduceLROnPlateau ensured optimal convergence.",
+                "about_arch_detail": "All images were resized to 224x224 and preprocessed with ResNet50's standard preprocessing (ImageNet mean subtraction, BGR conversion). Data augmentation on training set: RandomFlip, RandomRotation (0.2), RandomZoom (0.2), RandomBrightness (0.2), RandomContrast (0.2). The tf.data pipeline with prefetching was used for efficient GPU utilization. Dropout (p=0.3) provided regularization.",
+                // Footer
+                "footer": "OopsBin &mdash; Waste Classification System",
+                // Modal
+                "modal_why": "Why Recycle?", "modal_fact": "Did You Know?",
+                "modal_examples": "What Belongs Here", "modal_mistakes": "Common Mistakes",
+                "modal_images_label": "Training Images", "modal_f1_label": "F1-Score", "modal_bin_label": "Bin",
+                // 404
+                "err_404": "Page Not Found", "err_404_desc": "Looks like this page ended up in the wrong bin.",
+                "err_back": '<i class="fa-solid fa-house"></i> Back to Home',
+                // Result
+                "goes_in": "Goes in the"
+            },
+            es: {
+                "tab_home": "Inicio",
+                "tab_classify": "Clasificar",
+                "tab_metrics": "Metricas",
+                "tab_about": "Info",
+                "hero_welcome": 'Bienvenido a <span class="highlight">OopsBin</span>',
+                "hero_subtitle": "No sabes en que contenedor va? Deja que la IA lo resuelva.",
+                "hero_desc": "OopsBin es un sistema de clasificacion de residuos impulsado por deep learning. Sube una foto de tu residuo y nuestro modelo te dira exactamente en que contenedor va. Entrenado con mas de 16.000 imagenes en 7 categorias con 93.3% de precision.",
+                "hero_cta": '<i class="fa-solid fa-arrow-right"></i> Pruebalo',
+                "cat_cardboard": "Carton", "cat_glass": "Vidrio", "cat_metal": "Metal",
+                "cat_organic": "Organico", "cat_paper": "Papel", "cat_plastic": "Plastico", "cat_trash": "Basura",
+                "card_hint": "Click para detalles",
+                "bin_blue": "Contenedor Azul", "bin_green": "Contenedor Verde", "bin_yellow": "Contenedor Amarillo",
+                "bin_brown": "Contenedor Marron", "bin_gray": "Contenedor Gris",
+                "classify_title": "Clasifica tu Residuo",
+                "classify_desc": "Sube una imagen o usa tu camara para saber en que contenedor va.",
+                "subtab_image": "Imagen",
+                "subtab_camera": "Camara",
+                "camera_start": "Iniciar Camara",
+                "camera_capture": "Capturar",
+                "camera_stop": "Parar",
+                "camera_retake": '<i class="fa-solid fa-rotate-left"></i> Repetir',
+                "upload_drag": "Arrastra tu imagen aqui",
+                "upload_or": "o",
+                "upload_browse": '<i class="fa-solid fa-folder-open"></i> Buscar archivos',
+                "upload_hint": "PNG, JPG, JPEG, WEBP (max 10MB)",
+                "clear": '<i class="fa-solid fa-xmark"></i> Limpiar',
+                "analyzing": "Analizando imagen...",
+                "all_predictions": "Todas las Predicciones",
+                "metrics_title": "Rendimiento del Modelo",
+                "metrics_desc": "Metricas detalladas del modelo ResNet50 evaluado en el conjunto de test (1.385 imagenes).",
+                "kpi_accuracy": "Precision Test", "kpi_overfit": "Sobreajuste",
+                "kpi_f1": "F1 Ponderado", "kpi_epochs": "Epochs Totales",
+                "cm_title": '<i class="fa-solid fa-table-cells"></i> Matriz de Confusion',
+                "cm_desc": "La matriz de confusion muestra como el modelo clasifico cada imagen de test. Las celdas diagonales (verde oscuro) son predicciones correctas. Las celdas fuera de la diagonal son errores.",
+                "cm_correct": "Predicciones correctas", "cm_errors": "Errores notables (5+)",
+                "f1_title": '<i class="fa-solid fa-chart-column"></i> F1-Score por Clase',
+                "f1_desc": "El F1-Score equilibra precision y recall. Una puntuacion de 1.0 es perfecta. Todas las clases estan por encima de 0.88.",
+                "history_title": '<i class="fa-solid fa-chart-line"></i> Historial de Entrenamiento',
+                "history_desc": "El modelo se entreno en 3 fases: Fase 1 (epochs 1-20) solo la cabeza, Fase 2 (epochs 21-35) fine-tuning de las ultimas 30 capas, y Fase 3 (epochs 36-39) hasta convergencia.",
+                "error_title": '<i class="fa-solid fa-magnifying-glass-chart"></i> Analisis de Errores',
+                "error_desc": "Entender donde el modelo tiene dificultades ayuda a identificar areas de mejora.",
+                "report_title": '<i class="fa-solid fa-table"></i> Reporte de Clasificacion',
+                "report_desc": "<strong>Precision</strong> = de todos los predichos como X, cuantos eran realmente X. <strong>Recall</strong> = de todos los X reales, cuantos encontro el modelo. <strong>F1</strong> = media armonica.",
+                "th_class": "Clase", "th_precision": "Precision", "th_recall": "Recall",
+                "th_f1": "F1-Score", "th_support": "Soporte",
+                "err1_title": "Plastico &rarr; Metal (14 casos)",
+                "err1_desc": "Las superficies plasticas brillantes reflejan la luz de forma similar al metal.",
+                "err2_title": "Basura &rarr; Metal (10 casos)",
+                "err2_desc": "Los residuos mixtos suelen contener elementos metalicos. La categoria basura es muy diversa.",
+                "err3_title": "Vidrio &rarr; Metal (8 casos)",
+                "err3_desc": "Los envases de vidrio oscuro y las latas metalicas tienen caracteristicas visuales similares.",
+                "err4_title": "Plastico &rarr; Carton (8 casos)",
+                "err4_desc": "El plastico opaco o marron puede parecerse a texturas de carton en ciertas condiciones.",
+                "about_title": "Sobre OopsBin",
+                "about_model_h": "Modelo", "about_model_p": "ResNet50 con transfer learning de ImageNet, ajustado en 3 fases progresivas para clasificacion de residuos.",
+                "about_data_h": "Dataset", "about_data_p": "Entrenado con 16.756 imagenes de 3 datasets publicos, unificados en 7 categorias.",
+                "about_acc_h": "Precision", "about_acc_p": "93.3% de precision en test con solo 2.6% de sobreajuste. F1 superior a 0.88 en todas las clases.",
+                "about_arch_h": "Arquitectura", "about_arch_p": "Backbone ResNet50 congelado + cabeza de clasificacion con dropout y data augmentation.",
+                "about_model_detail": "ResNet50 es una red neuronal convolucional de 50 capas, preentrenada en ImageNet (1,2 millones de imagenes, 1000 clases). Congelamos el backbone y anadimos una cabeza personalizada: GlobalAveragePooling2D, Dropout (0.3), Dense (256, ReLU), Dropout (0.3), Dense (7, Softmax). Se entreno en 3 fases: Fase 1 solo la cabeza durante 20 epochs (lr=1e-3), Fase 2 ajuste fino de las ultimas 30 capas durante 15 epochs (lr=1e-5), Fase 3 hasta EarlyStopping en el epoch 4 (lr=5e-6). Parametros entrenables en Fase 1: 526.343.",
+                "about_data_detail": "Se combinaron 3 datasets: Garbage Classification (6 clases, 2.527 imagenes), Garbage Classification 12 clases (12 clases, 15.515 imagenes), y RealWaste (9 clases, 4.752 imagenes). Las clases se unificaron en 7 categorias. Textile se excluyo. Las subclases de vidrio (marron, verde, blanco) se fusionaron. Se limito a 2.500 imagenes por clase y se dividio 80/10/10 en train (11.036), validacion (1.376) y test (1.385).",
+                "about_acc_detail": "El modelo alcanzo un 95,9% de precision en entrenamiento y 93,3% en test, con un sobreajuste de solo 2,6%. Mejores clases: organico (F1=0,97), papel (F1=0,96), carton y vidrio (F1=0,95). Mas dificiles: basura (F1=0,88) y plastico (F1=0,90). EarlyStopping con paciencia=3 y ReduceLROnPlateau aseguraron la convergencia optima.",
+                "about_arch_detail": "Todas las imagenes se redimensionaron a 224x224 y se preprocesaron con el preprocesamiento estandar de ResNet50 (resta de media ImageNet, conversion BGR). Aumentacion de datos en train: RandomFlip, RandomRotation (0.2), RandomZoom (0.2), RandomBrightness (0.2), RandomContrast (0.2). Pipeline tf.data con prefetching para uso eficiente de GPU. Dropout (p=0.3) como regularizacion.",
+                "footer": "OopsBin &mdash; Sistema de Clasificacion de Residuos",
+                "modal_why": "Por que Reciclar?", "modal_fact": "Sabias que...?",
+                "modal_examples": "Que va aqui", "modal_mistakes": "Errores Comunes",
+                "modal_images_label": "Imagenes Entrenamiento", "modal_f1_label": "F1-Score", "modal_bin_label": "Contenedor",
+                "err_404": "Pagina No Encontrada", "err_404_desc": "Parece que esta pagina acabo en el contenedor equivocado.",
+                "err_back": '<i class="fa-solid fa-house"></i> Volver al Inicio',
+                "goes_in": "Va en el"
+            },
+            ko: {
+                "tab_home": "홈",
+                "tab_classify": "분류",
+                "tab_metrics": "성능",
+                "tab_about": "정보",
+                "hero_welcome": '<span class="highlight">OopsBin</span>에 오신 것을 환영합니다',
+                "hero_subtitle": "어떤 쓰레기통인지 모르겠나요? AI가 알려드립니다.",
+                "hero_desc": "OopsBin은 딥러닝 기반 폐기물 분류 시스템입니다. 폐기물 사진을 업로드하면 어떤 쓰레기통에 넣어야 하는지 알려드립니다. 16,000개 이상의 이미지, 7개 카테고리, 93.3% 정확도로 훈련되었습니다.",
+                "hero_cta": '<i class="fa-solid fa-arrow-right"></i> 시작하기',
+                "cat_cardboard": "골판지", "cat_glass": "유리", "cat_metal": "금속",
+                "cat_organic": "유기물", "cat_paper": "종이", "cat_plastic": "플라스틱", "cat_trash": "일반쓰레기",
+                "card_hint": "클릭하여 자세히 보기",
+                "bin_blue": "파란 통", "bin_green": "초록 통", "bin_yellow": "노란 통",
+                "bin_brown": "갈색 통", "bin_gray": "회색 통",
+                "classify_title": "폐기물 분류",
+                "classify_desc": "이미지를 업로드하거나 카메라를 사용하여 어떤 쓰레기통에 넣어야 하는지 확인하세요.",
+                "subtab_image": "이미지",
+                "subtab_camera": "카메라",
+                "camera_start": "카메라 시작",
+                "camera_capture": "촬영",
+                "camera_stop": "중지",
+                "camera_retake": '<i class="fa-solid fa-rotate-left"></i> 다시 촬영',
+                "upload_drag": "여기에 이미지를 드래그하세요",
+                "upload_or": "또는",
+                "upload_browse": '<i class="fa-solid fa-folder-open"></i> 파일 찾기',
+                "upload_hint": "PNG, JPG, JPEG, WEBP (최대 10MB)",
+                "clear": '<i class="fa-solid fa-xmark"></i> 지우기',
+                "analyzing": "이미지 분석 중...",
+                "all_predictions": "전체 예측",
+                "metrics_title": "모델 성능",
+                "metrics_desc": "테스트 세트(1,385개 이미지)에서 평가된 ResNet50 모델의 상세 지표입니다.",
+                "kpi_accuracy": "테스트 정확도", "kpi_overfit": "과적합",
+                "kpi_f1": "가중 F1", "kpi_epochs": "총 에포크",
+                "cm_title": '<i class="fa-solid fa-table-cells"></i> 혼동 행렬',
+                "cm_desc": "혼동 행렬은 모델이 각 테스트 이미지를 어떻게 분류했는지 보여줍니다. 대각선 셀(진한 녹색)은 올바른 예측입니다.",
+                "cm_correct": "올바른 예측", "cm_errors": "주요 오분류 (5+)",
+                "f1_title": '<i class="fa-solid fa-chart-column"></i> 클래스별 F1-Score',
+                "f1_desc": "F1-Score는 정밀도와 재현율의 균형을 맞춥니다. 1.0이 완벽한 점수입니다. 모든 클래스가 0.88 이상입니다.",
+                "history_title": '<i class="fa-solid fa-chart-line"></i> 훈련 이력',
+                "history_desc": "모델은 3단계로 훈련되었습니다: 1단계(에포크 1-20) 분류 헤드만 훈련, 2단계(에포크 21-35) 마지막 30개 레이어 미세 조정, 3단계(에포크 36-39) 수렴까지 계속.",
+                "error_title": '<i class="fa-solid fa-magnifying-glass-chart"></i> 오류 분석',
+                "error_desc": "모델이 어려워하는 부분을 이해하면 개선 영역을 식별하는 데 도움이 됩니다.",
+                "report_title": '<i class="fa-solid fa-table"></i> 상세 분류 보고서',
+                "report_desc": "<strong>정밀도</strong> = X로 예측된 것 중 실제로 X인 비율. <strong>재현율</strong> = 실제 X 중 모델이 찾은 비율. <strong>F1</strong> = 정밀도와 재현율의 조화 평균.",
+                "th_class": "클래스", "th_precision": "정밀도", "th_recall": "재현율",
+                "th_f1": "F1-Score", "th_support": "지원",
+                "err1_title": "플라스틱 &rarr; 금속 (14건)",
+                "err1_desc": "반짝이는 플라스틱 표면이 금속과 유사하게 빛을 반사합니다.",
+                "err2_title": "일반쓰레기 &rarr; 금속 (10건)",
+                "err2_desc": "혼합 폐기물에는 금속 요소가 포함되어 있는 경우가 많습니다.",
+                "err3_title": "유리 &rarr; 금속 (8건)",
+                "err3_desc": "어두운 유리 용기와 금속 캔은 시각적 특징이 비슷합니다.",
+                "err4_title": "플라스틱 &rarr; 골판지 (8건)",
+                "err4_desc": "갈색 불투명 플라스틱 포장재가 골판지 질감과 비슷할 수 있습니다.",
+                "about_title": "OopsBin 소개",
+                "about_model_h": "모델", "about_model_p": "ImageNet에서 전이 학습한 ResNet50을 3단계 미세 조정으로 폐기물 분류에 적용.",
+                "about_data_h": "데이터셋", "about_data_p": "3개 공개 데이터셋의 16,756개 이미지를 7개 카테고리로 통합하여 훈련.",
+                "about_acc_h": "정확도", "about_acc_p": "93.3% 테스트 정확도, 2.6% 과적합. 모든 클래스에서 F1 0.88 이상.",
+                "about_arch_h": "아키텍처", "about_arch_p": "동결된 ResNet50 백본 + 드롭아웃과 데이터 증강이 적용된 분류 헤드.",
+                "about_model_detail": "ResNet50은 50개 레이어의 합성곱 신경망으로, ImageNet(120만 이미지, 1000 클래스)에서 사전 학습되었습니다. 백본을 동결하고 커스텀 분류 헤드를 추가했습니다: GlobalAveragePooling2D, Dropout(0.3), Dense(256, ReLU), Dropout(0.3), Dense(7, Softmax). 3단계 학습: 1단계 헤드만 20 에포크(lr=1e-3), 2단계 마지막 30개 레이어 15 에포크(lr=1e-5), 3단계 EarlyStopping 4 에포크(lr=5e-6). 1단계 학습 가능 파라미터: 526,343.",
+                "about_data_detail": "3개 데이터셋 결합: Garbage Classification(6 클래스, 2,527 이미지), Garbage Classification 12 클래스(12 클래스, 15,515 이미지), RealWaste(9 클래스, 4,752 이미지). 7개 카테고리로 통합. 텍스타일 제외. 유리 하위 클래스(갈색, 녹색, 흰색) 병합. 클래스당 2,500개 이미지로 제한하고 80/10/10으로 분할: 학습(11,036), 검증(1,376), 테스트(1,385).",
+                "about_acc_detail": "학습 정확도 95.9%, 테스트 정확도 93.3%로 과적합 2.6%. 최고 클래스: 유기물(F1=0.97), 종이(F1=0.96), 골판지와 유리(F1=0.95). 가장 어려운 클래스: 일반쓰레기(F1=0.88), 플라스틱(F1=0.90). EarlyStopping(patience=3)과 ReduceLROnPlateau로 최적 수렴 보장.",
+                "about_arch_detail": "모든 이미지를 224x224로 리사이즈하고 ResNet50 표준 전처리(ImageNet 평균 차감, BGR 변환) 적용. 학습 세트 데이터 증강: RandomFlip, RandomRotation(0.2), RandomZoom(0.2), RandomBrightness(0.2), RandomContrast(0.2). tf.data 파이프라인과 프리페칭으로 GPU 효율 극대화. Dropout(p=0.3)으로 정규화.",
+                "footer": "OopsBin &mdash; 폐기물 분류 시스템",
+                "modal_why": "왜 재활용해야 할까요?", "modal_fact": "알고 계셨나요?",
+                "modal_examples": "여기에 속하는 것들", "modal_mistakes": "흔한 실수",
+                "modal_images_label": "훈련 이미지", "modal_f1_label": "F1-Score", "modal_bin_label": "분리수거통",
+                "err_404": "페이지를 찾을 수 없습니다", "err_404_desc": "이 페이지는 잘못된 쓰레기통에 들어간 것 같습니다.",
+                "err_back": '<i class="fa-solid fa-house"></i> 홈으로',
+                "goes_in": "넣을 곳:"
+            }
+        };
+
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (t[key]) el.innerHTML = t[key];
+            });
+        }
+
+        // Apply on load
+        applyTranslations(savedLang);
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
