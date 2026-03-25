@@ -1,3 +1,13 @@
+<p align="center">
+  <img src="app/static/img/logo.png" alt="OopsBin Logo" width="300">
+</p>
+
+<p align="center">
+  <img src="app/static/img/QR-green.png" alt="Scan to open OopsBin" width="180">
+  <br>
+  <em>Scan to open OopsBin</em>
+</p>
+
 # OopsBin
 
 Multiclass waste classification system powered by deep learning. Upload an image or use your camera and OopsBin tells you which bin it belongs in.
@@ -41,8 +51,8 @@ cd project4_Team_5
 Create a `.env` file in the project root:
 
 ```
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_anon_key
+SUPABASE_URL=supabase_url
+SUPABASE_KEY=supabase_anon_key
 ```
 
 ### 3. Run the application
@@ -224,3 +234,42 @@ The default model (ResNet50) was trained in 3 phases using transfer learning:
 | Phase 3 — Extended | 4 (early stop) | 5e-6 | Last 30 layers + head | 94.3% |
 
 Final results: **93.3% test accuracy** | **2.6% overfitting** (below 5% threshold)
+
+---
+
+## Team
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://www.linkedin.com/in/naizabethbermudez/">
+        <img src="app/static/img/blue-female-character.png" alt="Naizabeth" width="100"><br>
+        <b>Naizabeth Bermudez</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://www.linkedin.com/in/jbrasales/">
+        <img src="app/static/img/yellow-character.png" alt="Jonathan" width="100"><br>
+        <b>Jonathan Brasales</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://www.linkedin.com/in/raulmachaca/">
+        <img src="app/static/img/green-character.png" alt="Raul" width="100"><br>
+        <b>Raul Machaca Luna</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://www.linkedin.com/in/ruperthlosada/">
+        <img src="app/static/img/brown-character.png" alt="Roberto" width="100"><br>
+        <b>Roberto Molero</b>
+      </a>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="app/static/img/all-characters.png" alt="The OopsBin Team" width="500">
+  <br><br>
+  <em>Recycle right. The planet thanks you.</em>
+</p>
