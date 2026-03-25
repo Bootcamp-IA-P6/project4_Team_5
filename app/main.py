@@ -31,7 +31,7 @@ MODELS_CONFIG = {
     "efficientnet": {
         "file": "waste_classifier_final_Jonathan.keras",
         "label": "EfficientNetB0 (Jonathan)",
-        "classes": ["cardboard", "glass", "metal", "organic", "paper", "plastic", "trash"],
+        "classes": ['vidrio', 'plastico', 'metal', 'papel', 'organico', 'carton', 'no_reciclable'],
         "preprocess": "raw",
     },
     "efficientnet_raul": {
