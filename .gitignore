@@ -2,6 +2,9 @@
 data/processed/*.npz
 data/processed/*.csv
 
+# Environment
+.env
+
 # Python
 __pycache__/
 *.pyc
