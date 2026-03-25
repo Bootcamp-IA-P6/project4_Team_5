@@ -198,6 +198,22 @@ function switchTab(tabId) {
   document.getElementById(tabId).classList.add("active");
 
   if (tabId === "metrics") renderLearningCurves();
+  if (tabId === "contact") {
+    initContactTransition();
+  } else {
+    stopCarouselInterval();
+  }
+
+  // Background music — only on Contact tab
+  const music = document.getElementById('bgMusic');
+  if (music) {
+    if (tabId === "contact") {
+      music.volume = 0.3;
+      music.play().catch(() => {});
+    } else {
+      music.pause();
+    }
+  }
 }
 
 // ========== MODAL ==========
@@ -230,6 +246,99 @@ function closeModal(event, force) {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeModal({target: {classList: {contains: () => false}}}, true);
+});
+
+// ========== CAROUSEL ==========
+let currentSlide = 0;
+const slides = document.querySelectorAll('.carousel-slide');
+const dots = document.querySelectorAll('.dot');
+
+function showSlide(idx) {
+  const prev = document.querySelector('.carousel-slide.active');
+  dots.forEach(d => d.classList.remove('active'));
+  currentSlide = (idx + slides.length) % slides.length;
+  const next = slides[currentSlide];
+  if (prev && prev !== next) {
+    prev.style.transition = 'opacity 0.8s ease';
+    prev.style.opacity = '0';
+    setTimeout(() => {
+      prev.classList.remove('active');
+      prev.style.opacity = '';
+      prev.style.transition = '';
+      next.style.opacity = '0';
+      next.classList.add('active');
+      requestAnimationFrame(() => {
+        next.style.transition = 'opacity 0.8s ease';
+        next.style.opacity = '1';
+      });
+    }, 800);
+  } else if (next) {
+    next.classList.add('active');
+    next.style.opacity = '1';
+  }
+  if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+}
+
+function moveCarousel(dir) {
+  showSlide(currentSlide + dir);
+}
+
+function goToSlide(idx) {
+  showSlide(idx);
+}
+
+if (slides.length > 0) showSlide(0);
+
+// Auto-advance carousel every 4 seconds
+let carouselInterval = null;
+
+function startCarouselInterval() {
+  stopCarouselInterval();
+  carouselInterval = setInterval(() => {
+    moveCarousel(1);
+  }, 5000);
+}
+
+function stopCarouselInterval() {
+  if (carouselInterval) {
+    clearInterval(carouselInterval);
+    carouselInterval = null;
+  }
+}
+
+// Show all-characters for 4s, then switch to carousel
+function initContactTransition() {
+  const groupImg = document.getElementById('teamGroupImg');
+  const carousel = document.getElementById('contactCarousel');
+  if (!groupImg || !carousel) return;
+
+  stopCarouselInterval();
+  showSlide(0);
+  groupImg.style.display = 'block';
+  groupImg.style.opacity = '1';
+  carousel.style.display = 'none';
+
+  setTimeout(() => {
+    groupImg.style.transition = 'opacity 0.8s ease';
+    groupImg.style.opacity = '0';
+    setTimeout(() => {
+      groupImg.style.display = 'none';
+      carousel.style.display = 'flex';
+      carousel.style.opacity = '0';
+      carousel.style.transition = 'opacity 0.8s ease';
+      requestAnimationFrame(() => { carousel.style.opacity = '1'; });
+      startCarouselInterval();
+    }, 800);
+  }, 5000);
+}
+
+
+// ========== MODEL SELECTOR ==========
+document.querySelectorAll('.model-btn:not(.disabled)').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
 });
 
 // ========== SUB-TAB SWITCHING ==========
@@ -383,6 +492,8 @@ async function classifyImage(file) {
 
   const formData = new FormData();
   formData.append("file", file);
+  const activeModel = document.querySelector('.model-btn.active');
+  if (activeModel) formData.append("model", activeModel.dataset.model);
 
   try {
     const response = await fetch("/predict", { method: "POST", body: formData });
@@ -401,6 +512,9 @@ async function classifyImage(file) {
 }
 
 function displayResult(data) {
+  // Store for feedback
+  lastPrediction = data;
+
   document.getElementById("resultHeader").style.background = data.color;
   document.getElementById("resultIcon").className = `fa-solid fa-${data.icon}`;
   document.getElementById("resultClass").textContent = data.class;
@@ -427,8 +541,22 @@ function displayResult(data) {
     chart.appendChild(row);
   });
 
+  // Reset feedback form
+  resetFeedbackForm();
+
   result.style.display = "block";
   result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function resetFeedbackForm() {
+  const q = document.querySelector(".feedback-question");
+  const btns = document.querySelector(".feedback-buttons");
+  const correction = document.getElementById("feedbackCorrection");
+  const thanks = document.getElementById("feedbackThanks");
+  if (q) q.style.display = "flex";
+  if (btns) btns.style.display = "flex";
+  if (correction) correction.style.display = "none";
+  if (thanks) thanks.style.display = "none";
 }
 
 function resetUI() {
@@ -438,6 +566,92 @@ function resetUI() {
   dropZone.style.display = "block";
   fileInput.value = "";
   previewImg.src = "";
+}
+
+// ========== FEEDBACK ==========
+let lastPrediction = null;
+
+function submitFeedback(isCorrect) {
+  if (!lastPrediction) return;
+
+  if (isCorrect) {
+    sendFeedback(lastPrediction.id, lastPrediction.class, lastPrediction.confidence, true, null);
+    showFeedbackThanks();
+  } else {
+    document.querySelector(".feedback-buttons").style.display = "none";
+    document.querySelector(".feedback-question").style.display = "none";
+    buildCorrectionOptions();
+    document.getElementById("feedbackCorrection").style.display = "block";
+  }
+}
+
+function buildCorrectionOptions() {
+  const container = document.getElementById("correctionOptions");
+  container.innerHTML = "";
+
+  // Show top 2 predictions (excluding the predicted class)
+  const topPreds = lastPrediction.all_predictions
+    .filter(p => p.class !== lastPrediction.class)
+    .slice(0, 2);
+
+  topPreds.forEach(pred => {
+    const btn = document.createElement("button");
+    btn.className = "correction-btn";
+    btn.textContent = `${pred.class} (${pred.probability}%)`;
+    btn.onclick = () => submitCorrection(pred.class);
+    container.appendChild(btn);
+  });
+
+  // "Other" button that expands remaining options
+  const otherBtn = document.createElement("button");
+  otherBtn.className = "correction-btn other";
+  const lang = document.documentElement.getAttribute("data-lang") || "en";
+  const otherLabels = { en: "Other...", es: "Otro...", ko: "기타..." };
+  otherBtn.textContent = otherLabels[lang] || "Other...";
+  otherBtn.onclick = () => {
+    otherBtn.style.display = "none";
+    const remaining = lastPrediction.all_predictions
+      .filter(p => p.class !== lastPrediction.class && !topPreds.find(t => t.class === p.class));
+    remaining.forEach(pred => {
+      const btn = document.createElement("button");
+      btn.className = "correction-btn";
+      btn.textContent = pred.class;
+      btn.onclick = () => submitCorrection(pred.class);
+      container.appendChild(btn);
+    });
+  };
+  container.appendChild(otherBtn);
+}
+
+function submitCorrection(actualClass) {
+  if (!lastPrediction) return;
+  sendFeedback(lastPrediction.id, lastPrediction.class, lastPrediction.confidence, false, actualClass);
+  showFeedbackThanks();
+}
+
+function showFeedbackThanks() {
+  const q = document.querySelector(".feedback-question");
+  const btns = document.querySelector(".feedback-buttons");
+  const correction = document.getElementById("feedbackCorrection");
+  const thanks = document.getElementById("feedbackThanks");
+  if (q) q.style.display = "none";
+  if (btns) btns.style.display = "none";
+  if (correction) correction.style.display = "none";
+  if (thanks) thanks.style.display = "flex";
+}
+
+async function sendFeedback(id, predictedClass, confidence, isCorrect, actualClass) {
+  try {
+    await fetch("/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id, predicted_class: predictedClass, confidence, is_correct: isCorrect, actual_class: actualClass,
+      }),
+    });
+  } catch (e) {
+    console.error("Feedback error:", e);
+  }
 }
 
 // ========== LEARNING CURVES CHART ==========
