@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+{% block title %}OopsBin - Waste Classifier{% endblock %}
+
+{% block content %}
+<div class="tabs">
+    <button class="tab active" data-tab="home" data-i18n="tab_home">
+        <i class="fa-solid fa-house"></i> Home
+    </button>
+    <button class="tab" data-tab="classify" data-i18n="tab_classify">
+        <i class="fa-solid fa-camera"></i> Classify
+    </button>
+    <button class="tab" data-tab="metrics" data-i18n="tab_metrics">
+        <i class="fa-solid fa-chart-bar"></i> Metrics
+    </button>
+    <button class="tab" data-tab="about" data-i18n="tab_about">
+        <i class="fa-solid fa-circle-info"></i> About
+    </button>
+    <button class="tab" data-tab="contact" data-i18n="tab_contact">
+        Contact Us
+    </button>
+</div>
+
+<!-- HOME TAB -->
+<section id="home" class="tab-content active">
+    <div class="hero">
+        <div class="hero-inner">
+            <div class="hero-text">
+                <h1 data-i18n="hero_welcome">Welcome to <span class="highlight">OopsBin</span></h1>
+                <p class="subtitle" data-i18n="hero_subtitle">Not sure which bin? Let AI sort it out.</p>
+                <p class="description" data-i18n="hero_desc">
+                    OopsBin is a waste classification system powered by deep learning.
+                    Upload a photo of your waste and our model will tell you exactly which
+                    bin it belongs in. Trained on over 16,000 images across 7 categories
+                    with 93.3% accuracy.
+                </p>
+                <button class="cta-btn" onclick="switchTab('classify')" data-i18n="hero_cta">
+                    <i class="fa-solid fa-arrow-right"></i> Try it now
+                </button>
+            </div>
+            <img src="" alt="OopsBin" class="hero-mascot pet-img">
+        </div>
+    </div>
+
+    <div class="categories-grid">
+        <div class="category-card" style="--accent: #3B82F6" onclick="openModal('cardboard')">
+            <i class="fa-solid fa-box"></i>
+            <h3 data-i18n="cat_cardboard">Cardboard</h3>
+            <span class="bin-tag" data-i18n="bin_blue">Blue Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+        <div class="category-card" style="--accent: #22C55E" onclick="openModal('glass')">
+            <i class="fa-solid fa-wine-bottle"></i>
+            <h3 data-i18n="cat_glass">Glass</h3>
+            <span class="bin-tag" data-i18n="bin_green">Green Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+        <div class="category-card" style="--accent: #EAB308" onclick="openModal('metal')">
+            <i class="fa-solid fa-industry"></i>
+            <h3 data-i18n="cat_metal">Metal</h3>
+            <span class="bin-tag" data-i18n="bin_yellow">Yellow Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+        <div class="category-card" style="--accent: #92400E" onclick="openModal('organic')">
+            <i class="fa-solid fa-leaf"></i>
+            <h3 data-i18n="cat_organic">Organic</h3>
+            <span class="bin-tag" data-i18n="bin_brown">Brown Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+        <div class="category-card" style="--accent: #3B82F6" onclick="openModal('paper')">
+            <i class="fa-solid fa-newspaper"></i>
+            <h3 data-i18n="cat_paper">Paper</h3>
+            <span class="bin-tag" data-i18n="bin_blue">Blue Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+        <div class="category-card" style="--accent: #F59E0B" onclick="openModal('plastic')">
+            <i class="fa-solid fa-bottle-water"></i>
+            <h3 data-i18n="cat_plastic">Plastic</h3>
+            <span class="bin-tag" data-i18n="bin_yellow">Yellow Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+        <div class="category-card" style="--accent: #6B7280" onclick="openModal('trash')">
+            <i class="fa-solid fa-trash-can"></i>
+            <h3 data-i18n="cat_trash">Trash</h3>
+            <span class="bin-tag" data-i18n="bin_gray">Gray Bin</span>
+            <span class="card-hint" data-i18n="card_hint">Click for details</span>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY MODAL -->
+<div id="categoryModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal(event, true)">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="modal-header" id="modalHeader">
+            <i id="modalIcon" class="fa-solid fa-box"></i>
+            <h2 id="modalTitle"></h2>
+        </div>
+        <div class="modal-body">
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span class="stat-number" id="modalImages"></span>
+                    <span class="stat-label" data-i18n="modal_images_label">Training Images</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="stat-number" id="modalF1"></span>
+                    <span class="stat-label" data-i18n="modal_f1_label">F1-Score</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="stat-number" id="modalBin"></span>
+                    <span class="stat-label" data-i18n="modal_bin_label">Bin</span>
+                </div>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fa-solid fa-recycle"></i> <span data-i18n="modal_why">Why Recycle?</span></h4>
+                <p id="modalWhy"></p>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fa-solid fa-lightbulb"></i> <span data-i18n="modal_fact">Did You Know?</span></h4>
+                <p id="modalFact"></p>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fa-solid fa-circle-check"></i> <span data-i18n="modal_examples">What Belongs Here</span></h4>
+                <p id="modalExamples"></p>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="modal_mistakes">Common Mistakes</span></h4>
+                <p id="modalMistakes"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASSIFY TAB -->
+<section id="classify" class="tab-content">
+    <h2 data-i18n="classify_title">Classify Your Waste</h2>
+    <p class="section-desc" data-i18n="classify_desc">Upload an image or use your camera to find out which bin it belongs in.</p>
+
+    <div class="model-selector">
+        <label data-i18n="model_select">Select model:</label>
+        <div class="model-options" id="modelOptions">
+            <button class="model-btn active" data-model="resnet50">
+                <i class="fa-solid fa-brain"></i> ResNet50
+                <span class="model-badge default" data-i18n="model_default">Default</span>
+            </button>
+            <button class="model-btn" data-model="efficientnet">
+                <i class="fa-solid fa-bolt"></i> EfficientNetB0 Model 1
+            </button>
+            <button class="model-btn" data-model="efficientnet_raul">
+                <i class="fa-solid fa-bolt"></i> EfficientNetB0 Model 2
+            </button>
+            <button class="model-btn disabled" data-model="mobilenet" disabled>
+                <i class="fa-solid fa-mobile-screen"></i> MobileNetV2
+            </button>
+        </div>
+    </div>
+
+    <div class="sub-tabs">
+        <button class="sub-tab active" data-subtab="image" onclick="switchSubTab('image')">
+            <i class="fa-solid fa-image"></i> <span data-i18n="subtab_image">Image</span>
+        </button>
+        <button class="sub-tab" data-subtab="camera" onclick="switchSubTab('camera')">
+            <i class="fa-solid fa-video"></i> <span data-i18n="subtab_camera">Camera</span>
+        </button>
+    </div>
+
+    <!-- IMAGE SUB-TAB -->
+    <div id="subtab-image" class="sub-tab-content active">
+        <div class="upload-zone" id="dropZone">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <p data-i18n="upload_drag">Drag & drop your image here</p>
+            <span class="upload-or" data-i18n="upload_or">or</span>
+            <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click(); event.stopPropagation();" data-i18n="upload_browse">
+                <i class="fa-solid fa-folder-open"></i> Browse files
+            </button>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+            <p class="upload-hint" data-i18n="upload_hint">PNG, JPG, JPEG, WEBP (max 10MB)</p>
+        </div>
+
+        <div id="preview" class="preview-container" style="display:none;">
+            <img id="previewImg" alt="Preview">
+            <button id="clearBtn" class="clear-btn" data-i18n="clear">
+                <i class="fa-solid fa-xmark"></i> Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- CAMERA SUB-TAB -->
+    <div id="subtab-camera" class="sub-tab-content">
+        <div class="camera-container" id="cameraContainer">
+            <video id="cameraFeed" autoplay playsinline></video>
+            <canvas id="cameraCanvas" style="display:none;"></canvas>
+            <div class="camera-controls">
+                <button class="camera-btn" id="startCameraBtn" onclick="startCamera()">
+                    <i class="fa-solid fa-video"></i> <span data-i18n="camera_start">Start Camera</span>
+                </button>
+                <button class="camera-btn capture" id="captureBtn" onclick="captureFrame()" style="display:none;">
+                    <i class="fa-solid fa-camera"></i> <span data-i18n="camera_capture">Capture</span>
+                </button>
+                <button class="camera-btn stop" id="stopCameraBtn" onclick="stopCamera()" style="display:none;">
+                    <i class="fa-solid fa-stop"></i> <span data-i18n="camera_stop">Stop</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="cameraPreview" class="preview-container" style="display:none;">
+            <img id="cameraPreviewImg" alt="Captured">
+            <button id="cameraClearBtn" class="clear-btn" onclick="clearCapture()" data-i18n="camera_retake">
+                <i class="fa-solid fa-rotate-left"></i> Retake
+            </button>
+        </div>
+    </div>
+
+    <div id="loading" class="loading" style="display:none;">
+        <div class="spinner"></div>
+        <p data-i18n="analyzing">Analyzing image...</p>
+    </div>
+
+    <div id="result" class="result-card" style="display:none;">
+        <div class="result-header" id="resultHeader">
+            <i id="resultIcon" class="fa-solid fa-recycle"></i>
+            <div>
+                <h3 id="resultClass"></h3>
+                <p id="resultBin"></p>
+            </div>
+            <span class="confidence-badge" id="resultConfidence"></span>
+        </div>
+        <div class="predictions-bar">
+            <h4 data-i18n="all_predictions">All Predictions</h4>
+            <div id="predictionsChart"></div>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="feedback-form" id="feedbackForm">
+            <div class="feedback-question">
+                <i class="fa-solid fa-circle-question"></i>
+                <span data-i18n="feedback_question">Was this prediction correct?</span>
+            </div>
+            <div class="feedback-buttons">
+                <button class="feedback-btn correct" onclick="submitFeedback(true)">
+                    <i class="fa-solid fa-check"></i> <span data-i18n="feedback_yes">Yes</span>
+                </button>
+                <button class="feedback-btn incorrect" onclick="submitFeedback(false)">
+                    <i class="fa-solid fa-xmark"></i> <span data-i18n="feedback_no">No</span>
+                </button>
+            </div>
+            <div class="feedback-correction" id="feedbackCorrection" style="display:none;">
+                <p data-i18n="feedback_correct_class">What is the correct class?</p>
+                <div class="correction-options" id="correctionOptions"></div>
+            </div>
+            <div class="feedback-thanks" id="feedbackThanks" style="display:none;">
+                <i class="fa-solid fa-heart"></i>
+                <span data-i18n="feedback_thanks">Thanks for your feedback!</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- METRICS TAB -->
+<section id="metrics" class="tab-content">
+    <h2 style="text-align:center" data-i18n="metrics_title">Model Performance</h2>
+    <p class="section-desc" data-i18n="metrics_desc">Detailed metrics from the trained ResNet50 model evaluated on the test set (1,385 images).</p>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <span class="kpi-value">93.3%</span>
+            <span class="kpi-label" data-i18n="kpi_accuracy">Test Accuracy</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-value">2.6%</span>
+            <span class="kpi-label" data-i18n="kpi_overfit">Overfitting</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-value">0.93</span>
+            <span class="kpi-label" data-i18n="kpi_f1">Weighted F1</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-value">39</span>
+            <span class="kpi-label" data-i18n="kpi_epochs">Total Epochs</span>
+        </div>
+    </div>
+
+    <div class="metric-block">
+        <h3 data-i18n="cm_title"><i class="fa-solid fa-table-cells"></i> Confusion Matrix</h3>
+        <p class="metric-explanation" data-i18n="cm_desc">The confusion matrix shows how the model classified each test image. Diagonal cells (dark green) are correct predictions. Off-diagonal cells are errors. The stronger the color, the higher the count.</p>
+        <div class="cm-wrapper">
+            <table class="confusion-matrix">
+                <thead>
+                    <tr><th></th><th>card.</th><th>glass</th><th>metal</th><th>org.</th><th>paper</th><th>plast.</th><th>trash</th></tr>
+                </thead>
+                <tbody>
+                    <tr><th>cardboard</th><td class="cm-hit">172</td><td>0</td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+                    <tr><th>glass</th><td>2</td><td class="cm-hit">233</td><td class="cm-err">8</td><td>1</td><td>0</td><td class="cm-err">6</td><td>0</td></tr>
+                    <tr><th>metal</th><td>0</td><td>1</td><td class="cm-hit">190</td><td>1</td><td>3</td><td>2</td><td>1</td></tr>
+                    <tr><th>organic</th><td>0</td><td>1</td><td>0</td><td class="cm-hit">182</td><td>0</td><td>0</td><td>1</td></tr>
+                    <tr><th>paper</th><td>3</td><td>0</td><td>1</td><td>0</td><td class="cm-hit">208</td><td>1</td><td>2</td></tr>
+                    <tr><th>plastic</th><td class="cm-err">8</td><td>5</td><td class="cm-err">14</td><td>1</td><td>0</td><td class="cm-hit">197</td><td>3</td></tr>
+                    <tr><th>trash</th><td>0</td><td>0</td><td class="cm-err">10</td><td>5</td><td class="cm-err">6</td><td>3</td><td class="cm-hit">110</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="cm-legend">
+            <span><span class="legend-box legend-hit"></span> <span data-i18n="cm_correct">Correct predictions</span></span>
+            <span><span class="legend-box legend-err"></span> <span data-i18n="cm_errors">Notable misclassifications (5+)</span></span>
+        </div>
+    </div>
+
+    <div class="metric-block">
+        <h3 data-i18n="f1_title"><i class="fa-solid fa-chart-column"></i> F1-Score by Class</h3>
+        <p class="metric-explanation" data-i18n="f1_desc">The F1-Score balances precision and recall. A score of 1.0 is perfect. All classes are above 0.88.</p>
+        <div class="f1-chart">
+            <div class="f1-row"><span class="f1-label">Organic</span><div class="f1-bar-bg"><div class="f1-bar" style="width:97%;background:#92400E">0.97</div></div></div>
+            <div class="f1-row"><span class="f1-label">Paper</span><div class="f1-bar-bg"><div class="f1-bar" style="width:96%;background:#3B82F6">0.96</div></div></div>
+            <div class="f1-row"><span class="f1-label">Cardboard</span><div class="f1-bar-bg"><div class="f1-bar" style="width:95%;background:#3B82F6">0.95</div></div></div>
+            <div class="f1-row"><span class="f1-label">Glass</span><div class="f1-bar-bg"><div class="f1-bar" style="width:95%;background:#22C55E">0.95</div></div></div>
+            <div class="f1-row"><span class="f1-label">Metal</span><div class="f1-bar-bg"><div class="f1-bar" style="width:90%;background:#EAB308">0.90</div></div></div>
+            <div class="f1-row"><span class="f1-label">Plastic</span><div class="f1-bar-bg"><div class="f1-bar" style="width:90%;background:#F59E0B">0.90</div></div></div>
+            <div class="f1-row"><span class="f1-label">Trash</span><div class="f1-bar-bg"><div class="f1-bar" style="width:88%;background:#6B7280">0.88</div></div></div>
+        </div>
+    </div>
+
+    <div class="metric-block">
+        <h3 data-i18n="history_title"><i class="fa-solid fa-chart-line"></i> Training History</h3>
+        <p class="metric-explanation" data-i18n="history_desc">The model was trained in 3 phases: Phase 1 (epochs 1-20) trained only the classification head, Phase 2 (epochs 21-35) fine-tuned the last 30 layers, and Phase 3 (epochs 36-39) continued fine-tuning until convergence.</p>
+        <canvas id="learningCurves" height="300"></canvas>
+    </div>
+
+    <div class="metric-block">
+        <h3 data-i18n="error_title"><i class="fa-solid fa-magnifying-glass-chart"></i> Error Analysis</h3>
+        <p class="metric-explanation" data-i18n="error_desc">Understanding where the model struggles helps identify areas for improvement.</p>
+        <div class="error-grid">
+            <div class="error-item">
+                <div class="error-icon" style="background:#F59E0B"><i class="fa-solid fa-bottle-water"></i></div>
+                <div><h4 data-i18n="err1_title">Plastic &rarr; Metal (14 cases)</h4><p data-i18n="err1_desc">Shiny plastic surfaces reflect light similarly to metal, causing confusion.</p></div>
+            </div>
+            <div class="error-item">
+                <div class="error-icon" style="background:#6B7280"><i class="fa-solid fa-trash-can"></i></div>
+                <div><h4 data-i18n="err2_title">Trash &rarr; Metal (10 cases)</h4><p data-i18n="err2_desc">Mixed waste often contains metallic elements.</p></div>
+            </div>
+            <div class="error-item">
+                <div class="error-icon" style="background:#22C55E"><i class="fa-solid fa-wine-bottle"></i></div>
+                <div><h4 data-i18n="err3_title">Glass &rarr; Metal (8 cases)</h4><p data-i18n="err3_desc">Dark glass containers and metallic cans have similar visual features.</p></div>
+            </div>
+            <div class="error-item">
+                <div class="error-icon" style="background:#3B82F6"><i class="fa-solid fa-bottle-water"></i></div>
+                <div><h4 data-i18n="err4_title">Plastic &rarr; Cardboard (8 cases)</h4><p data-i18n="err4_desc">Brown or opaque plastic packaging can resemble cardboard textures.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="metric-block">
+        <h3 data-i18n="report_title"><i class="fa-solid fa-table"></i> Detailed Classification Report</h3>
+        <p class="metric-explanation" data-i18n="report_desc"><strong>Precision</strong> = of all items predicted as X, how many were actually X. <strong>Recall</strong> = of all actual X items, how many did the model find. <strong>F1</strong> = harmonic mean of precision and recall.</p>
+        <div class="metrics-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-i18n="th_class">Class</th>
+                        <th data-i18n="th_precision">Precision</th>
+                        <th data-i18n="th_recall">Recall</th>
+                        <th data-i18n="th_f1">F1-Score</th>
+                        <th data-i18n="th_support">Support</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Cardboard</td><td>0.93</td><td>0.98</td><td>0.95</td><td>176</td></tr>
+                    <tr><td>Glass</td><td>0.97</td><td>0.93</td><td>0.95</td><td>250</td></tr>
+                    <tr><td>Metal</td><td>0.84</td><td>0.96</td><td>0.90</td><td>198</td></tr>
+                    <tr><td>Organic</td><td>0.96</td><td>0.99</td><td>0.97</td><td>184</td></tr>
+                    <tr><td>Paper</td><td>0.95</td><td>0.97</td><td>0.96</td><td>215</td></tr>
+                    <tr><td>Plastic</td><td>0.94</td><td>0.86</td><td>0.90</td><td>228</td></tr>
+                    <tr><td>Trash</td><td>0.94</td><td>0.82</td><td>0.88</td><td>134</td></tr>
+                    <tr class="table-total"><td>Weighted Avg</td><td>0.94</td><td>0.93</td><td>0.93</td><td>1,385</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT TAB -->
+<section id="about" class="tab-content">
+    <h2 data-i18n="about_title">About OopsBin</h2>
+    <div class="about-grid">
+        <div class="about-card expandable" onclick="toggleAboutCard(this)">
+            <i class="fa-solid fa-brain"></i>
+            <h3 data-i18n="about_model_h">Model</h3>
+            <p class="about-summary" data-i18n="about_model_p">ResNet50 with transfer learning from ImageNet, fine-tuned in 3 progressive phases for waste classification.</p>
+            <div class="about-detail" data-i18n="about_model_detail">
+                ResNet50 is a convolutional neural network with 50 layers, pre-trained on ImageNet (1.2 million images, 1000 classes). We froze the backbone and added a custom classification head: GlobalAveragePooling2D, Dropout (0.3), Dense (256, ReLU), Dropout (0.3), and Dense (7, Softmax). Training was done in 3 phases: Phase 1 trained only the head for 20 epochs (lr=1e-3), Phase 2 fine-tuned the last 30 layers for 15 epochs (lr=1e-5), and Phase 3 continued until EarlyStopping at epoch 4 (lr=5e-6). Total trainable parameters in Phase 1: 526,343.
+            </div>
+            <span class="about-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+        </div>
+        <div class="about-card expandable" onclick="toggleAboutCard(this)">
+            <i class="fa-solid fa-database"></i>
+            <h3 data-i18n="about_data_h">Dataset</h3>
+            <p class="about-summary" data-i18n="about_data_p">Trained on 16,756 images from 3 public datasets, unified into 7 waste categories.</p>
+            <div class="about-detail" data-i18n="about_data_detail">
+                Three datasets were combined: Garbage Classification (6 classes, 2,527 images), Garbage Classification 12 classes (12 classes, 15,515 images), and RealWaste (9 classes, 4,752 images). Classes were mapped and unified into 7 categories: cardboard, glass, metal, organic, paper, plastic, and trash. Textile was excluded due to low representation across datasets. Glass subclasses (brown, green, white) were merged. The dataset was capped at 2,500 images per class to reduce imbalance and split 80/10/10 into train (11,036), validation (1,376), and test (1,385).
+            </div>
+            <span class="about-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+        </div>
+        <div class="about-card expandable" onclick="toggleAboutCard(this)">
+            <i class="fa-solid fa-bullseye"></i>
+            <h3 data-i18n="about_acc_h">Accuracy</h3>
+            <p class="about-summary" data-i18n="about_acc_p">93.3% test accuracy with only 2.6% overfitting. Precision, recall, and F1 above 0.88 for all classes.</p>
+            <div class="about-detail" data-i18n="about_acc_detail">
+                The model achieved 95.9% training accuracy and 93.3% test accuracy, giving an overfitting margin of just 2.6% (well below the 5% threshold). Best performing classes: organic (F1=0.97), paper (F1=0.96), cardboard and glass (F1=0.95). Most challenging: trash (F1=0.88) due to visual diversity, and plastic (F1=0.90) due to confusion with metal. EarlyStopping with patience=3 and ReduceLROnPlateau ensured optimal convergence without overfitting.
+            </div>
+            <span class="about-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+        </div>
+        <div class="about-card expandable" onclick="toggleAboutCard(this)">
+            <i class="fa-solid fa-layer-group"></i>
+            <h3 data-i18n="about_arch_h">Architecture</h3>
+            <p class="about-summary" data-i18n="about_arch_p">Frozen ResNet50 backbone + custom classification head with dropout regularization and data augmentation.</p>
+            <div class="about-detail" data-i18n="about_arch_detail">
+                All images were resized to 224x224 and preprocessed with ResNet50's standard preprocessing (ImageNet mean subtraction, BGR conversion). Data augmentation was applied only to the training set: RandomFlip (horizontal), RandomRotation (0.2), RandomZoom (0.2), RandomBrightness (0.2), and RandomContrast (0.2). The tf.data pipeline with prefetching was used for efficient GPU utilization. Dropout layers (p=0.3) in the classification head provided regularization during training.
+            </div>
+            <span class="about-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CONTACT US ========== -->
+<section id="contact" class="tab-content">
+    <h2 style="text-align:center; margin-bottom:0.2rem" data-i18n="contact_title">Meet the Team</h2>
+    <p class="section-desc" style="text-align:center; margin-bottom:0" data-i18n="contact_desc">The people behind OopsBin.</p>
+
+    <div class="team-group-img" id="teamGroupImg">
+        <img src="{{ url_for('static', filename='img/all-characters.png') }}" alt="The OopsBin Team" class="all-characters">
+    </div>
+
+    <div class="contact-layout" id="contactCarousel" style="display:none;">
+        <div class="carousel-side">
+            <div class="carousel-container">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide" data-member="naiza">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Naizabeth Bermudez</h3>
+                                <p class="member-role">MobileNetV2 Model</p>
+                                <a href="https://www.linkedin.com/in/naizabethbermudez/" target="_blank" rel="noopener" class="contact-btn contact-blue" data-i18n="contact_her">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Her
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/blue-female-character.png') }}" alt="Naizabeth">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-member="jonathan">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Jonathan Brasales</h3>
+                                <p class="member-role">EfficientNetB0 Model 1</p>
+                                <a href="https://www.linkedin.com/in/jbrasales/" target="_blank" rel="noopener" class="contact-btn contact-yellow" data-i18n="contact_him">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Him
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/yellow-character.png') }}" alt="Jonathan">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-member="raul">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Raul Machaca Luna</h3>
+                                <p class="member-role">EfficientNetB0 Model 2</p>
+                                <a href="https://www.linkedin.com/in/raulmachaca/" target="_blank" rel="noopener" class="contact-btn contact-green" data-i18n="contact_him">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Him
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/green-character.png') }}" alt="Raul">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-slide" data-member="roberto">
+                        <div class="member-card">
+                            <div class="member-info">
+                                <h3>Roberto Molero</h3>
+                                <p class="member-role">ResNet50 Model</p>
+                                <a href="https://www.linkedin.com/in/ruperthlosada/" target="_blank" rel="noopener" class="contact-btn contact-brown" data-i18n="contact_him">
+                                    <i class="fa-brands fa-linkedin"></i> Contact Him
+                                </a>
+                            </div>
+                            <div class="member-character">
+                                <img src="{{ url_for('static', filename='img/brown-character.png') }}" alt="Roberto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-dots" id="carouselDots">
+                <span class="dot active" onclick="goToSlide(0)"></span>
+                <span class="dot" onclick="goToSlide(1)"></span>
+                <span class="dot" onclick="goToSlide(2)"></span>
+                <span class="dot" onclick="goToSlide(3)"></span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

@@ -1,15 +1,36 @@
-# Modelos de Deep Learning
+# Data files (too large for git)
+data/processed/*.npz
+data/processed/*.csv
+
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude
+.claude/
+
+
+.DS_Store
+# Deep learning models
 *.keras
 *.h5
 *.tflite
 *.weights.h5
 
-# Entornos virtuales
+# Virtual environments
 .venv/
 venv/
 env/
 
-# Carpetas de datos (si son muchas imágenes)
+# Data folders (if many images)
 data/
 dataset/
 !/data/.gitkeep
