@@ -1021,6 +1021,29 @@ main {
     color: #EF4444;
 }
 
+.classify-again-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem auto 0;
+    padding: 0.7rem 1.5rem;
+    background: var(--green-main);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    width: fit-content;
+}
+
+.classify-again-btn:hover {
+    background: var(--green-mid);
+    transform: scale(1.05);
+}
+
 /* ========== ABOUT TAB ========== */
 .about-grid {
     display: grid;

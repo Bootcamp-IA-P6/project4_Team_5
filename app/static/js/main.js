@@ -173,6 +173,64 @@ const categoryData = {
       examples: "깨진 도자기, 낡은 신발, 사용한 기저귀, 담배꽁초, 껌, 고장난 가정용품, 먼지와 쓸어 모은 것.",
       mistakes: "일반 쓰레기통의 많은 물건이 실제로 재활용될 수 있습니다. 먼저 다른 카테고리에 맞는지 확인하세요. 전자제품, 배터리, 유해 화학물질은 특수 처리가 필요합니다."
     }
+  },
+  pt: {
+    cardboard: {
+      icon: "box", color: "#3B82F6", bin: "Azul",
+      images: "1,755", f1: "0.95",
+      why: "Reciclar uma tonelada de cart\u00e3o poupa 9 metros c\u00fabicos de espa\u00e7o em aterro e 17 \u00e1rvores. O cart\u00e3o \u00e9 um dos materiais mais f\u00e1ceis de reciclar, exigindo 75% menos energia do que fabricar cart\u00e3o novo a partir de polpa virgem.",
+      fact: "O cart\u00e3o pode ser reciclado 5 a 7 vezes antes de as fibras ficarem demasiado curtas. Mais de 80% dos produtos vendidos s\u00e3o embalados em cart\u00e3o, gerando mais de 37 mil milh\u00f5es de metros quadrados por ano.",
+      examples: "Caixas de envio, caixas de cereais, caixas de ovos, rolos de papel higi\u00e9nico, caixas de sapatos, caixas de pizza (se limpas), tubos de embalagem.",
+      mistakes: "O cart\u00e3o encerado (tetra pak) vai para outro contentor. Caixas de pizza com gordura v\u00e3o para o org\u00e2nico. N\u00e3o incluir cart\u00e3o com muita fita adesiva ou agrafos."
+    },
+    glass: {
+      icon: "wine-bottle", color: "#22C55E", bin: "Verde",
+      images: "2,500", f1: "0.95",
+      why: "O vidro \u00e9 100% recicl\u00e1vel e pode ser reciclado infinitamente sem perda de qualidade. Reciclar vidro reduz as emiss\u00f5es de CO2 em 50% comparado com fabricar vidro novo. Cada tonelada reciclada poupa 1,2 toneladas de mat\u00e9rias-primas.",
+      fact: "Uma garrafa de vidro demora mais de 1 milh\u00e3o de anos a decompor-se num aterro. No entanto, uma garrafa reciclada pode voltar a ser uma garrafa nova na prateleira em apenas 30 dias.",
+      examples: "Garrafas de bebidas, frascos de comida, garrafas de vinho, recipientes de molho, recipientes de cosm\u00e9ticos em vidro.",
+      mistakes: "O vidro de janelas, espelhos e cer\u00e2mica tem pontos de fus\u00e3o diferentes e contamina o lote. As l\u00e2mpadas cont\u00eam metais e devem ir para o ecoponto. O pyrex n\u00e3o se recicla com vidro normal."
+    },
+    metal: {
+      icon: "industry", color: "#EAB308", bin: "Amarelo",
+      images: "1,969", f1: "0.90",
+      why: "Reciclar alum\u00ednio poupa 95% da energia necess\u00e1ria para fabricar alum\u00ednio novo. A reciclagem de a\u00e7o poupa 60%. Os metais podem ser reciclados indefinidamente sem perder propriedades.",
+      fact: "Uma lata de alum\u00ednio pode voltar a ser uma lata nova em apenas 60 dias. A lata m\u00e9dia cont\u00e9m 73% de conte\u00fado reciclado. Reciclar uma lata poupa energia suficiente para alimentar um televisor durante 3 horas.",
+      examples: "Latas de alum\u00ednio, latas de conserva, recipientes de comida, papel de alum\u00ednio (limpo), tampas, tampas met\u00e1licas, aeross\u00f3is (vazios).",
+      mistakes: "As latas de tinta com res\u00edduos necessitam de elimina\u00e7\u00e3o especial. As pilhas cont\u00eam metais perigosos e requerem reciclagem espec\u00edfica. Panelas e frigideiras s\u00e3o demasiado grossas para a reciclagem padr\u00e3o."
+    },
+    organic: {
+      icon: "leaf", color: "#92400E", bin: "Castanho",
+      images: "1,832", f1: "0.97",
+      why: "Os res\u00edduos org\u00e2nicos em aterros produzem metano, um g\u00e1s com efeito de estufa 25 vezes mais potente que o CO2. A compostagem transforma os res\u00edduos em solo rico em nutrientes, reduzindo a necessidade de fertilizantes qu\u00edmicos at\u00e9 50%.",
+      fact: "Cerca de 40% de toda a comida produzida no mundo \u00e9 desperdi\u00e7ada. Se o desperd\u00edcio alimentar fosse um pa\u00eds, seria o terceiro maior emissor de gases com efeito de estufa, ap\u00f3s a China e os EUA.",
+      examples: "Cascas de fruta, restos de legumes, borras de caf\u00e9, saquetas de ch\u00e1, cascas de ovo, restos de jardim, folhas, relva cortada, pequenos ramos.",
+      mistakes: "A carne e os lactic\u00ednios podem atrair pragas na compostagem caseira (mas servem para compostagem industrial). Evitar comida cozinhada com \u00f3leos. Os sacos biodegrad\u00e1veis podem n\u00e3o se decompor em todas as instala\u00e7\u00f5es."
+    },
+    paper: {
+      icon: "newspaper", color: "#3B82F6", bin: "Azul",
+      images: "2,144", f1: "0.96",
+      why: "Reciclar papel poupa 70% da energia necess\u00e1ria para produzir papel novo. Cada tonelada de papel reciclado poupa 17 \u00e1rvores, 26.000 litros de \u00e1gua e 2,5 metros c\u00fabicos de espa\u00e7o em aterro.",
+      fact: "O papel representa 26% do total de res\u00edduos em aterros. Um trabalhador de escrit\u00f3rio m\u00e9dio usa cerca de 10.000 folhas de papel por ano. O papel pode ser reciclado 5 a 7 vezes antes de as fibras ficarem demasiado curtas.",
+      examples: "Jornais, revistas, papel de escrit\u00f3rio, envelopes, cadernos, papel de impress\u00e3o, papel de embrulho (n\u00e3o metalizado), sacos de papel.",
+      mistakes: "Os len\u00e7os e o papel de cozinha est\u00e3o contaminados e v\u00e3o para o org\u00e2nico. O papel encerado n\u00e3o pode ser reciclado. O papel triturado \u00e9 geralmente demasiado pequeno. Os recibos (papel t\u00e9rmico) cont\u00eam BPA e n\u00e3o devem ser reciclados."
+    },
+    plastic: {
+      icon: "bottle-water", color: "#F59E0B", bin: "Amarelo",
+      images: "2,268", f1: "0.90",
+      why: "Apenas 9% de todo o pl\u00e1stico produzido foi reciclado. Reciclar pl\u00e1stico usa 88% menos energia do que produzi-lo a partir de mat\u00e9rias-primas. Manter o pl\u00e1stico fora dos oceanos protege mais de 800 esp\u00e9cies marinhas.",
+      fact: "Uma garrafa de pl\u00e1stico demora 450 anos a decompor-se. Produzimos aproximadamente 380 milh\u00f5es de toneladas de pl\u00e1stico por ano, equivalente ao peso de toda a popula\u00e7\u00e3o humana. At\u00e9 2050, poder\u00e1 haver mais pl\u00e1stico do que peixes no oceano.",
+      examples: "Garrafas PET (\u00e1gua, refrigerantes), recipientes HDPE (champ\u00f4, detergente), tabuleiros de comida, copos de iogurte, sacos de pl\u00e1stico (em algumas regi\u00f5es).",
+      mistakes: "O pl\u00e1stico preto \u00e9 frequentemente indetect\u00e1vel pelas m\u00e1quinas de triagem. Os brinquedos de pl\u00e1stico t\u00eam materiais mistos. O pl\u00e1stico com restos de comida deve ser lavado primeiro. O esferovite raramente \u00e9 reciclado nos contentores padr\u00e3o."
+    },
+    trash: {
+      icon: "trash-can", color: "#6B7280", bin: "Cinzento",
+      images: "1,329", f1: "0.88",
+      why: "A separa\u00e7\u00e3o correta garante que os materiais recicl\u00e1veis n\u00e3o acabem em aterros. Uma pessoa gera em m\u00e9dia 0,74 kg de res\u00edduos por dia. Reduzir o lixo geral \u00e9 a melhor forma de diminuir o impacto ambiental.",
+      fact: "Um aterro m\u00e9dio est\u00e1 ativo entre 30 e 50 anos. Ap\u00f3s o encerramento, requer monitoriza\u00e7\u00e3o durante mais 30 anos. Os aterros modernos usam membranas e captura de g\u00e1s, mas os antigos podem libertar toxinas para as \u00e1guas subterr\u00e2neas.",
+      examples: "Cer\u00e2mica partida, sapatos gastos, fraldas usadas, pontas de cigarro, pastilhas el\u00e1sticas, objetos dom\u00e9sticos partidos, p\u00f3 e varreduras.",
+      mistakes: "Muitos objetos no contentor cinzento poderiam ser reciclados. Verifique primeiro se o seu res\u00edduo se encaixa noutra categoria. Eletr\u00f3nicos, pilhas e produtos qu\u00edmicos perigosos requerem elimina\u00e7\u00e3o especial, n\u00e3o v\u00e3o para o contentor cinzento."
+    }
   }
 };
 
@@ -634,10 +692,24 @@ function showFeedbackThanks() {
   const btns = document.querySelector(".feedback-buttons");
   const correction = document.getElementById("feedbackCorrection");
   const thanks = document.getElementById("feedbackThanks");
+  const againBtn = document.getElementById("classifyAgainBtn");
   if (q) q.style.display = "none";
   if (btns) btns.style.display = "none";
   if (correction) correction.style.display = "none";
   if (thanks) thanks.style.display = "flex";
+  if (againBtn) againBtn.style.display = "flex";
+}
+
+const classifyAgainBtn = document.getElementById("classifyAgainBtn");
+if (classifyAgainBtn) {
+  classifyAgainBtn.addEventListener("click", () => {
+    resetUI();
+    resetFeedbackForm();
+    classifyAgainBtn.style.display = "none";
+    const fileInput = document.getElementById("fileInput");
+    if (fileInput) fileInput.value = "";
+    window.scrollTo({ top: document.getElementById("classify").offsetTop, behavior: "smooth" });
+  });
 }
 
 async function sendFeedback(id, predictedClass, confidence, isCorrect, actualClass) {
