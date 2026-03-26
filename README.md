@@ -12,7 +12,7 @@
 
 Multiclass waste classification system powered by deep learning. Upload an image or use your camera and OopsBin tells you which bin it belongs in.
 
-7 categories | 93.3% accuracy | 4 models | 3 languages (EN / ES / KO)
+7 categories | 93.3% accuracy | 4 models | 3 languages (EN / ES / KO / PT)
 
 ---
 
