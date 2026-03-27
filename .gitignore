@@ -1,0 +1,52 @@
+# Data files (too large for git)
+data/processed/*.npz
+data/processed/*.csv
+
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Claude
+.claude/
+
+
+.DS_Store
+# Deep learning models
+*.keras
+*.h5
+*.tflite
+*.weights.h5
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Data folders (if many images)
+data/
+dataset/
+!/data/.gitkeep
+.ipynb_checkpoints/
+edda.ipynb
+
+__pycache__/
+raw/
+
+models/baseline_*
+logs/baseline_f2642b8cc93a/
+models/   
+
+main2.py
+registro_fase_4_finetuning.json
+pruebas.ipynb
+predictor.py
+
+

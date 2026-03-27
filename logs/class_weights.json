@@ -1,0 +1,9 @@
+{
+  "vidrio": 0.6386,
+  "plastico": 0.8722,
+  "metal": 1.0018,
+  "papel": 1.0065,
+  "organico": 1.1177,
+  "carton": 1.1543,
+  "no_reciclable": 1.8699
+}
